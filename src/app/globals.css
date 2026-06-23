@@ -1,0 +1,105 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --navbar-height: 72px;
+}
+
+html {
+  scroll-behavior: auto; /* Lenis handles scroll */
+}
+
+body {
+  background-color: #12121f;
+  background-image: radial-gradient(#2A2A4A 1px, transparent 1px);
+  background-size: 32px 32px;
+  background-attachment: fixed;
+  color: #e3e0f4;
+  font-family: 'Inter', sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Custom selection */
+::selection {
+  background-color: #fc536d;
+  color: #5b0017;
+}
+
+/* Typewriter cursor */
+.typewriter-cursor::after {
+  content: '|';
+  animation: blink 1s infinite;
+}
+
+@keyframes blink {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0; }
+}
+
+/* Coral gradient hover */
+.coral-gradient-text {
+  background: linear-gradient(90deg, #ffb2b7, #fc536d);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* Terminal scrollbar */
+.terminal-scroll {
+  scrollbar-width: thin;
+  scrollbar-color: #2A2A4A transparent;
+}
+
+.terminal-scroll::-webkit-scrollbar {
+  width: 4px;
+}
+
+.terminal-scroll::-webkit-scrollbar-thumb {
+  background-color: #2A2A4A;
+  border-radius: 10px;
+}
+
+/* Skill bar animation */
+@keyframes grow-bar {
+  from { width: 0%; }
+  to { width: var(--bar-width); }
+}
+
+.skill-bar {
+  animation: grow-bar 1.5s ease-out forwards;
+}
+
+/* Ticker */
+@keyframes ticker {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+
+.ticker-track {
+  animation: ticker 30s linear infinite;
+}
+
+/* Ping animation for status dot */
+@keyframes ping {
+  75%, 100% {
+    transform: scale(2);
+    opacity: 0;
+  }
+}
+
+.animate-ping {
+  animation: ping 1s cubic-bezier(0, 0, 0.2, 1) infinite;
+}
+
+/* Counter number style */
+.counter-num {
+  font-family: 'Space Grotesk', sans-serif;
+  font-weight: 700;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ticker-track {
+    animation-play-state: paused;
+  }
+}
