@@ -107,7 +107,6 @@ export default function ContactForm() {
                 value={form.from_name}
                 onChange={handleChange}
                 type="text"
-                placeholder="John Doe"
                 className={inputClass}
                 required
               />
@@ -121,7 +120,6 @@ export default function ContactForm() {
                 value={form.from_email}
                 onChange={handleChange}
                 type="email"
-                placeholder="john@example.com"
                 className={inputClass}
                 required
               />
