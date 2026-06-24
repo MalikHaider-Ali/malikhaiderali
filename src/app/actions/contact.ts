@@ -56,7 +56,7 @@ export async function sendContactEmail(formData: {
           </div>
 
           <p style="margin-top: 24px; color: #8888AA; font-size: 12px; text-align: center;">
-            Sent from Ahmad Raza Portfolio — <a href="mailto:${from_email}" style="color: #41eec2;">Reply directly to ${from_email}</a>
+            Sent from Malik Haider Ali Portfolio — <a href="mailto:${from_email}" style="color: #41eec2;">Reply directly to ${from_email}</a>
           </p>
         </div>
       `,

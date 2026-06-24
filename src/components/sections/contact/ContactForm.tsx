@@ -97,7 +97,6 @@ export default function ContactForm() {
                 value={form.from_name}
                 onChange={handleChange}
                 type="text"
-                placeholder="John Doe"
                 className={inputClass}
                 required
               />
@@ -111,7 +110,6 @@ export default function ContactForm() {
                 value={form.from_email}
                 onChange={handleChange}
                 type="email"
-                placeholder="john@example.com"
                 className={inputClass}
                 required
               />
@@ -165,10 +163,10 @@ export default function ContactForm() {
                 className={selectClass}
               >
                 <option value="">Project budget</option>
-                <option>Under $2,500</option>
-                <option>$2,500 – $5,000</option>
-                <option>$5,000 – $15,000</option>
-                <option>$15,000+</option>
+                <option>Under 25,000</option>
+                <option>25,000 – 50,000</option>
+                <option>50,000 – 100,000</option>
+                <option>100,000+</option>
                 <option>Let&apos;s discuss</option>
               </select>
               <span className="absolute right-3 top-[38px] material-symbols-outlined text-text-secondary pointer-events-none text-base">
