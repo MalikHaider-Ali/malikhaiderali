@@ -1,7 +1,7 @@
 "use client";
 import { useState } from "react";
 import { motion } from "framer-motion";
-import emailjs from "@emailjs/browser";
+import { sendContactEmail } from "@/app/actions/contact";
 
 const inputClass =
   "w-full bg-surface-container-high border border-border-subtle rounded-lg px-4 py-3 font-body text-[16px] text-text-primary placeholder:text-text-secondary focus:outline-none focus:border-primary/50 transition-colors";
@@ -24,8 +24,12 @@ export default function ContactForm() {
   });
 
   function handleChange(
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) {
+    setForm((prev) => ({ ...prev, [e.target.name]: e.target.value }));
+  }
+
+  function handleSelectChange(e: React.ChangeEvent<HTMLSelectElement>) {
     setForm((prev) => ({ ...prev, [e.target.name]: e.target.value }));
   }
 
@@ -34,21 +38,12 @@ export default function ContactForm() {
     setError(null);
     setLoading(true);
 
-    try {
-      await emailjs.send(
-        process.env.NEXT_PUBLIC_EMAILJS_SERVICE_ID!,
-        process.env.NEXT_PUBLIC_EMAILJS_TEMPLATE_ID!,
-        {
-          from_name: form.from_name,
-          from_email: form.from_email,
-          subject: form.subject,
-          service: form.service,
-          budget: form.budget,
-          message: form.message,
-        },
-        process.env.NEXT_PUBLIC_EMAILJS_PUBLIC_KEY!
-      );
+    const result = await sendContactEmail(form);
+    setLoading(false);
 
+    if (result?.error) {
+      setError(result.error);
+    } else {
       setSent(true);
       setForm({
         from_name: "",
@@ -58,11 +53,6 @@ export default function ContactForm() {
         budget: "",
         message: "",
       });
-    } catch (err) {
-      console.error("EmailJS error:", err);
-      setError("Failed to send message. Please try again.");
-    } finally {
-      setLoading(false);
     }
   }
 
@@ -107,6 +97,7 @@ export default function ContactForm() {
                 value={form.from_name}
                 onChange={handleChange}
                 type="text"
+                placeholder="John Doe"
                 className={inputClass}
                 required
               />
@@ -120,6 +111,7 @@ export default function ContactForm() {
                 value={form.from_email}
                 onChange={handleChange}
                 type="email"
+                placeholder="john@example.com"
                 className={inputClass}
                 required
               />
@@ -148,7 +140,7 @@ export default function ContactForm() {
               <select
                 name="service"
                 value={form.service}
-                onChange={handleChange}
+                onChange={handleSelectChange}
                 className={selectClass}
               >
                 <option value="">Select service</option>
@@ -169,14 +161,14 @@ export default function ContactForm() {
               <select
                 name="budget"
                 value={form.budget}
-                onChange={handleChange}
+                onChange={handleSelectChange}
                 className={selectClass}
               >
                 <option value="">Project budget</option>
-                <option>Under 25,000</option>
-                <option>25,000 – 50,000</option>
-                <option>50,000 – 150,000</option>
-                <option>150,000+</option>
+                <option>Under $2,500</option>
+                <option>$2,500 – $5,000</option>
+                <option>$5,000 – $15,000</option>
+                <option>$15,000+</option>
                 <option>Let&apos;s discuss</option>
               </select>
               <span className="absolute right-3 top-[38px] material-symbols-outlined text-text-secondary pointer-events-none text-base">
@@ -200,7 +192,6 @@ export default function ContactForm() {
             />
           </div>
 
-          {/* Error */}
           {error && (
             <motion.div
               initial={{ opacity: 0, y: -8 }}
