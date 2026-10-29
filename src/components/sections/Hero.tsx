@@ -146,7 +146,7 @@ export default function Hero() {
           {/* CTA Buttons */}
           <motion.div variants={itemVariants} className="flex flex-wrap gap-4 pt-4">
             <motion.a
-              href="#projects"
+              href="/projects"
               whileHover={{ scale: 1.04 }}
               whileTap={{ scale: 0.97 }}
               className="bg-primary px-8 py-4 rounded-lg font-mono text-[12px] uppercase tracking-widest text-on-primary hover:bg-primary-container transition-colors duration-300 shadow-lg shadow-primary/10"
