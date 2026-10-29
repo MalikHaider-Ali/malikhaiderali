@@ -5,12 +5,17 @@ import { motion } from "framer-motion";
 
 const roles = ["Full Stack Web Developer", "Automation Engineer", "Problem Solver"];
 
-const terminalCode = `class Malik Haider Ali:
+// File lives in /public, so it is served from the site root.
+// Tip: avoid spaces in filenames, they break links on some hosts.
+const CV_PATH = "/Haider-Ali-CV.pdf";
+
+// Fixed: valid class name + stack that matches the real MERN / n8n skill set
+const terminalCode = `class MalikHaiderAli:
     def __init__(self):
         self.stack = {
             "frontend": ["React", "Tailwind", "Next.js"],
-            "backend": ["Python", "Node.js", "PostgreSQL"],
-            "automation": ["Selenium", "Docker", "CI/CD"]
+            "backend": ["Node.js", "Express", "MongoDB"],
+            "automation": ["n8n", "Make", "Zapier"]
         }
         self.status = "Available for hire"
 
@@ -28,6 +33,11 @@ const terminalCode = `class Malik Haider Ali:
 "Clean, Scalable, Maintainable"
 _`;
 
+/**
+ * Typewriter hook.
+ * Uses a single timeout per tick (no nested timers), so cleanup is
+ * always complete and there are no stale timers when state changes.
+ */
 function useTypewriter(words: string[]) {
   const [text, setText] = useState("");
   const [wordIdx, setWordIdx] = useState(0);
@@ -35,22 +45,26 @@ function useTypewriter(words: string[]) {
 
   useEffect(() => {
     const current = words[wordIdx];
-    const speed = isDeleting ? 50 : 150;
+    const isComplete = !isDeleting && text === current;
+
+    // Pause at the end of a word, then delete faster than we type
+    const delay = isComplete ? 2000 : isDeleting ? 50 : 150;
 
     const timeout = setTimeout(() => {
-      if (!isDeleting) {
-        setText(current.substring(0, text.length + 1));
-        if (text.length + 1 === current.length) {
-          setTimeout(() => setIsDeleting(true), 2000);
-        }
-      } else {
-        setText(current.substring(0, text.length - 1));
-        if (text.length - 1 === 0) {
+      if (isComplete) {
+        setIsDeleting(true);
+      } else if (isDeleting) {
+        if (text.length <= 1) {
+          setText("");
           setIsDeleting(false);
           setWordIdx((prev) => (prev + 1) % words.length);
+        } else {
+          setText(current.substring(0, text.length - 1));
         }
+      } else {
+        setText(current.substring(0, text.length + 1));
       }
-    }, speed);
+    }, delay);
 
     return () => clearTimeout(timeout);
   }, [text, isDeleting, wordIdx, words]);
@@ -61,15 +75,16 @@ function useTypewriter(words: string[]) {
 export default function Hero() {
   const role = useTypewriter(roles);
   const [termText, setTermText] = useState("");
-  const termRef = useRef<HTMLPreElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
   const indexRef = useRef(0);
 
+  // Terminal typing effect
   useEffect(() => {
     const interval = setInterval(() => {
       if (indexRef.current < terminalCode.length) {
-        setTermText((prev) => prev + terminalCode.charAt(indexRef.current));
         indexRef.current++;
+        // slice() is safer than appending char by char (no duplicates in React StrictMode)
+        setTermText(terminalCode.slice(0, indexRef.current));
         if (containerRef.current) {
           containerRef.current.scrollTop = containerRef.current.scrollHeight;
         }
@@ -130,18 +145,27 @@ export default function Hero() {
 
           {/* CTA Buttons */}
           <motion.div variants={itemVariants} className="flex flex-wrap gap-4 pt-4">
-            <a
+            <motion.a
               href="#projects"
+              whileHover={{ scale: 1.04 }}
+              whileTap={{ scale: 0.97 }}
               className="bg-primary px-8 py-4 rounded-lg font-mono text-[12px] uppercase tracking-widest text-on-primary hover:bg-primary-container transition-colors duration-300 shadow-lg shadow-primary/10"
             >
               View My Work
-            </a>
-            <a
-              href="/cv web dev.pdf"
+            </motion.a>
+
+            {/* Opens the CV preview in a new tab (the browser's PDF viewer has its own download icon).
+                rel="noopener noreferrer" stops the new tab from accessing this page. */}
+            <motion.a
+              href={CV_PATH}
+              target="_blank"
+              rel="noopener noreferrer"
+              whileHover={{ scale: 1.04 }}
+              whileTap={{ scale: 0.97 }}
               className="border border-border-subtle px-8 py-4 rounded-lg font-mono text-[12px] uppercase tracking-widest text-text-primary hover:bg-surface-elevated transition-colors duration-300"
             >
               Download CV
-            </a>
+            </motion.a>
           </motion.div>
         </motion.div>
 
@@ -170,9 +194,7 @@ export default function Hero() {
               ref={containerRef}
               className="p-6 font-mono text-[14px] terminal-scroll h-[320px] overflow-y-auto"
             >
-              <pre ref={termRef} className="text-on-surface whitespace-pre-wrap">
-                {termText}
-              </pre>
+              <pre className="text-on-surface whitespace-pre-wrap">{termText}</pre>
             </div>
           </div>
         </motion.div>

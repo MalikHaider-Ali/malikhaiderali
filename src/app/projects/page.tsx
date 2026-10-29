@@ -34,9 +34,7 @@ export default function ProjectsPage() {
       <Navbar />
       <main className="pt-[72px] overflow-x-hidden">
         <ProjectsHero />
-        <Suspense fallback={<ProjectsLoading />}>
-          <FeaturedProjects />
-        </Suspense>
+        <FeaturedProjects />
         <CoreServices />
         <ProcessSteps />
         <InvestmentTiers />
